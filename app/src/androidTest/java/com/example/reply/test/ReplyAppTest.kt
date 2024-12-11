@@ -24,4 +24,24 @@ class ReplyAppTest {
         composeTestRule.onNodeWithTagForStringId(R.string.navigation_bottom).assertExists()
     }
 
+    @Test
+    fun mediumDevice_verifyUsingNavigationRail() {
+        composeTestRule.setContent {
+            ReplyApp(
+                windowSize = WindowWidthSizeClass.Medium
+            )
+        }
+        composeTestRule.onNodeWithTagForStringId(R.string.navigation_rail).assertExists()
+    }
+
+    @Test
+    fun expandedDevice_verifyUsingNavigationDrawer() {
+        composeTestRule.setContent {
+            ReplyApp(
+                windowSize = WindowWidthSizeClass.Expanded
+            )
+        }
+        composeTestRule.onNodeWithTagForStringId(R.string.navigation_drawer).assertExists()
+    }
+
 }
