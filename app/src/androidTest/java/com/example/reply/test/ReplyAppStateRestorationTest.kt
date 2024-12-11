@@ -2,9 +2,13 @@ package com.example.reply.test
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasAnyDescendant
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.reply.R
@@ -19,7 +23,7 @@ class ReplyAppStateRestorationTest {
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun compactDevice_afterConfigChange_selectedEmailEmailRetained(){
+    fun compactDevice_afterConfigChange_selectedEmailEmailRetained() {
         val stateRestorationTester = StateRestorationTester(composeTestRule)
         stateRestorationTester.setContent {
             ReplyApp(
@@ -45,5 +49,43 @@ class ReplyAppStateRestorationTest {
         composeTestRule.onNodeWithText(
             composeTestRule.activity.getString(LocalEmailsDataProvider.allEmails[2].body)
         ).assertExists()
+    }
+
+    @Test
+    fun expandedDevice_afterConfigChange_selectedEmailEmailRetained() {
+        val stateRestorationTester = StateRestorationTester(composeTestRule)
+        stateRestorationTester.setContent {
+            ReplyApp(
+                WindowWidthSizeClass.Expanded
+            )
+        }
+        composeTestRule.onNodeWithText(
+            composeTestRule.activity.getString(LocalEmailsDataProvider.allEmails[2].body)
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithText(
+            composeTestRule.activity.getString(LocalEmailsDataProvider.allEmails[2].subject)
+        ).performClick()
+
+        composeTestRule.onNodeWithTagForStringId(R.string.details_screen).onChildren()
+            .assertAny(
+                hasAnyDescendant(
+                    hasText(
+                        composeTestRule.activity.getString(
+                            LocalEmailsDataProvider.allEmails[2].body
+                        )
+                    )
+                )
+            )
+        stateRestorationTester.emulateSavedInstanceStateRestore()
+        composeTestRule.onNodeWithTagForStringId(R.string.details_screen).onChildren()
+            .assertAny(
+                hasAnyDescendant(
+                    hasText(
+                        composeTestRule.activity.getString(
+                            LocalEmailsDataProvider.allEmails[2].body
+                        )
+                    )
+                )
+            )
     }
 }

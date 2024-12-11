@@ -136,7 +136,7 @@ fun ReplyHomeScreen(
             ReplyDetailsScreen(
                 replyUiState = replyUiState,
                 onBackPressed = onDetailScreenBackPressed,
-                modifier = modifier,
+                modifier = modifier.testTag(stringResource(R.string.details_screen)),
                 isFullScreen = true
             )
         }
